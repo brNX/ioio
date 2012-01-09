@@ -368,6 +368,24 @@ typedef struct PACKED {
     BYTE size : 2;
 } INCAP_REPORT_ARGS;
 
+
+/***********************SNES/NES****************************/
+
+// setup snes/nes pins
+typedef struct PACKED {
+  BYTE latch_pin : 6;
+  BYTE clock_pin : 6;
+  BYTE data_pin : 6;
+} SNES_CONFIG_ARGS;
+
+// setup snes/nes pins
+typedef struct PACKED {
+  BYTE byte1;
+  BYTE byte2;
+} REPORT_SNES_STATUS;
+
+/***********************************************************/
+
 // BOOKMARK(add_feature): Add a struct for the new incoming / outgoing message
 // arguments.
 
@@ -402,6 +420,10 @@ typedef struct PACKED {
     ICSP_CONFIG_ARGS                         icsp_config;
     INCAP_CONFIG_ARGS                        incap_config;
     SET_PIN_INCAP_ARGS                       set_pin_incap;
+    /***********************SNES/NES****************************/
+    SNES_CONFIG_ARGS                         snes_config;
+    /***********************************************************/
+
     // BOOKMARK(add_feature): Add argument struct to the union.
   } args;
   BYTE __vabuf[64];  // buffer for var args. never access directly!
@@ -429,6 +451,10 @@ typedef struct PACKED {
     ICSP_REPORT_RX_STATUS_ARGS              icsp_report_rx_status;
     INCAP_STATUS_ARGS                       incap_status;
     INCAP_REPORT_ARGS                       incap_report;
+    /***********************SNES/NES****************************/
+    REPORT_SNES_STATUS                      snes_status;
+    /***********************************************************/
+
     // BOOKMARK(add_feature): Add argument struct to the union.
   } args;
 } OUTGOING_MESSAGE;
@@ -489,6 +515,11 @@ typedef enum {
   INCAP_STATUS                        = 0x1B,
   SET_PIN_INCAP                       = 0x1C,
   INCAP_REPORT                        = 0x1C,
+
+  /***********************SNES/NES****************************/
+  SNES_CONFIG                         = 0x1D,
+  SNES_STATUS                         = 0x1D,
+  /***********************************************************/
 
   // BOOKMARK(add_feature): Add new message type to enum.
   MESSAGE_TYPE_LIMIT

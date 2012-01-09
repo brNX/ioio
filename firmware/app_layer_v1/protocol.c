@@ -47,6 +47,10 @@
 #include "icsp.h"
 #include "incap.h"
 
+/***********************SNES/NES****************************/
+#include "snes.h"
+/***********************************************************/
+
 #define CHECK(cond) do { if (!(cond)) { log_printf("Check failed: %s", #cond); return FALSE; }} while(0)
 
 #define FW_IMPL_VER "IOIO0311"
@@ -80,7 +84,10 @@ const BYTE incoming_arg_size[MESSAGE_TYPE_LIMIT] = {
   sizeof(ICSP_PROG_EXIT_ARGS),
   sizeof(ICSP_CONFIG_ARGS),
   sizeof(INCAP_CONFIG_ARGS),
-  sizeof(SET_PIN_INCAP_ARGS)
+  sizeof(SET_PIN_INCAP_ARGS),
+  /***********************SNES/NES****************************/
+  sizeof(SNES_CONFIG_ARGS)
+  /***********************************************************/
   // BOOKMARK(add_feature): Add sizeof (argument for incoming message).
   // Array is indexed by message type enum.
 };
@@ -114,7 +121,10 @@ const BYTE outgoing_arg_size[MESSAGE_TYPE_LIMIT] = {
   sizeof(RESERVED_ARGS),
   sizeof(ICSP_CONFIG_ARGS),
   sizeof(INCAP_STATUS_ARGS),
-  sizeof(INCAP_REPORT_ARGS)
+  sizeof(INCAP_REPORT_ARGS),
+  /***********************SNES/NES****************************/
+  sizeof(REPORT_SNES_STATUS)
+  /***********************************************************/
 
   // BOOKMARK(add_feature): Add sizeof (argument for outgoing message).
   // Array is indexed by message type enum.
@@ -464,6 +474,15 @@ static BOOL MessageDone() {
                   rx_msg.args.set_pin_incap.incap_num,
                   rx_msg.args.set_pin_incap.enable);
       break;
+
+    /***********************SNES/NES****************************/
+    case SNES_CONFIG:
+      CHECK(rx_msg.args.snes_config.clock_pin < NUM_PINS);
+      CHECK(rx_msg.args.snes_config.data_pin < NUM_PINS);
+      CHECK(rx_msg.args.snes_config.latch_pin  < NUM_PINS);
+      SNESConfig(rx_msg.args.snes_config.data_pin,rx_msg.args.snes_config.clock_pin,rx_msg.args.snes_config.latch_pin);
+      break;
+    /***********************************************************/
 
     // BOOKMARK(add_feature): Add incoming message handling to switch clause.
     // Call Echo() if the message is to be echoed back.

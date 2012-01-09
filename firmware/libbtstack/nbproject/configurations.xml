@@ -118,8 +118,8 @@
       </C30-LD>
       <C30Global>
         <property key="fast-math" value="false"/>
-        <property key="legacy-libc" value="false"/>
         <property key="output-file-format" value="coff"/>
+        <property key="legacy-libc" value="false"/>
       </C30Global>
       <PICkit3PlatformTool>
       </PICkit3PlatformTool>
@@ -174,8 +174,8 @@
       </C30-LD>
       <C30Global>
         <property key="fast-math" value="false"/>
-        <property key="legacy-libc" value="false"/>
         <property key="output-file-format" value="coff"/>
+        <property key="legacy-libc" value="false"/>
       </C30Global>
       <PICkit3PlatformTool>
       </PICkit3PlatformTool>
@@ -230,8 +230,8 @@
       </C30-LD>
       <C30Global>
         <property key="fast-math" value="false"/>
-        <property key="legacy-libc" value="false"/>
         <property key="output-file-format" value="coff"/>
+        <property key="legacy-libc" value="false"/>
       </C30Global>
       <PICkit3PlatformTool>
       </PICkit3PlatformTool>
