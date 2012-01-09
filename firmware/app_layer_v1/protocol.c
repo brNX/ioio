@@ -223,6 +223,9 @@ void AppProtocolTasks(CHANNEL_HANDLE h) {
   SPITasks();
   I2CTasks();
   ICSPTasks();
+  /***********************SNES/NES****************************/
+  SNESTasks();
+  /***********************************************************/
   if (ConnectionCanSend(h)) {
     BYTE prev = SyncInterruptLevel(1);
     const BYTE* data;
