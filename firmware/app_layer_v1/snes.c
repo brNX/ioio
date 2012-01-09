@@ -5,9 +5,9 @@
 
 
 void SNESConfig(int data_pin,int clock_pin, int latch_pin){
-    SetPinDigitalOut(clock_pin);
+    /*SetPinDigitalOut(clock_pin);
     SetPinDigitalOut(latch_pin);
-    SetPinDigitalIn(data_pin);
+    SetPinDigitalIn(data_pin);*/
 }
 
 static inline void SNESSendStatus(BYTE byte1,BYTE byte2) {
