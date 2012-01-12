@@ -635,4 +635,13 @@ public interface IOIO {
 	 *             method.
 	 */
 	public IcspMaster openIcspMaster() throws ConnectionLostException;
+	
+	
+	
+	/*******************************SNES***************************/
+	public Snes openSnes(int latchPin,int clkPin, int dataPin) throws ConnectionLostException;
+	/***************************************************************/
+	
+	
+	
 }

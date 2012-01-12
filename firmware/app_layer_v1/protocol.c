@@ -123,6 +123,7 @@ const BYTE outgoing_arg_size[MESSAGE_TYPE_LIMIT] = {
   sizeof(INCAP_STATUS_ARGS),
   sizeof(INCAP_REPORT_ARGS),
   /***********************SNES/NES****************************/
+  sizeof(SNES_CONFIG_ARGS),
   sizeof(REPORT_SNES_STATUS)
   /***********************************************************/
 
@@ -480,11 +481,12 @@ static BOOL MessageDone() {
 
     /***********************SNES/NES****************************/
     case SNES_CONFIG:
-      CHECK(rx_msg.args.snes_config.clock_pin < NUM_PINS);
-      CHECK(rx_msg.args.snes_config.data_pin < NUM_PINS);
-      CHECK(rx_msg.args.snes_config.latch_pin  < NUM_PINS);
-      SNESConfig(rx_msg.args.snes_config.data_pin,rx_msg.args.snes_config.clock_pin,rx_msg.args.snes_config.latch_pin);
-      break;
+        CHECK(rx_msg.args.snes_config.clock_pin < NUM_PINS);
+        CHECK(rx_msg.args.snes_config.data_pin < NUM_PINS);
+        CHECK(rx_msg.args.snes_config.latch_pin  < NUM_PINS);
+        SNESConfig(rx_msg.args.snes_config.data_pin,rx_msg.args.snes_config.clock_pin,rx_msg.args.snes_config.latch_pin);
+        Echo();
+        break;
     /***********************************************************/
 
     // BOOKMARK(add_feature): Add incoming message handling to switch clause.

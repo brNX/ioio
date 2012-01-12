@@ -373,9 +373,9 @@ typedef struct PACKED {
 
 // setup snes/nes pins
 typedef struct PACKED {
-  BYTE latch_pin : 6;
-  BYTE clock_pin : 6;
-  BYTE data_pin : 6;
+  BYTE latch_pin;
+  BYTE clock_pin;
+  BYTE data_pin;
 } SNES_CONFIG_ARGS;
 
 // setup snes/nes pins
@@ -518,7 +518,7 @@ typedef enum {
 
   /***********************SNES/NES****************************/
   SNES_CONFIG                         = 0x1D,
-  SNES_STATUS                         = 0x1D,
+  SNES_STATUS                         = 0x1E,
   /***********************************************************/
 
   // BOOKMARK(add_feature): Add new message type to enum.

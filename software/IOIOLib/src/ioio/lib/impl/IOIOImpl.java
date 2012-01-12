@@ -40,6 +40,7 @@ import ioio.lib.api.PulseInput;
 import ioio.lib.api.PulseInput.ClockRate;
 import ioio.lib.api.PulseInput.PulseMode;
 import ioio.lib.api.PwmOutput;
+import ioio.lib.api.Snes;
 import ioio.lib.api.SpiMaster;
 import ioio.lib.api.TwiMaster;
 import ioio.lib.api.TwiMaster.Rate;
@@ -620,6 +621,30 @@ public class IOIOImpl implements IOIO, DisconnectListener {
 		return openPulseInput(new DigitalInput.Spec(pin), ClockRate.RATE_16MHz,
 				mode, true);
 	}
+	
+	
+	/*******************************SNES ***************************/
+	@Override
+	public Snes openSnes(int latchPin,int clkPin, int dataPin) throws ConnectionLostException{
+		checkState();
+		PinFunctionMap.checkValidPin(latchPin);
+		PinFunctionMap.checkValidPin(clkPin);
+		PinFunctionMap.checkValidPin(dataPin);
+		checkPinFree(latchPin);
+		checkPinFree(clkPin);
+		checkPinFree(dataPin);
+		
+		SnesImpl result = new SnesImpl(this, latchPin, clkPin, dataPin);
+		addDisconnectListener(result);
+		openPins_[latchPin] = true;
+		openPins_[clkPin] = true;
+		openPins_[dataPin] = true;
+		
+		return result;
+		
+	}
+	/***************************************************************/
+	
 
 	private void checkPinFree(int pin) {
 		if (openPins_[pin]) {

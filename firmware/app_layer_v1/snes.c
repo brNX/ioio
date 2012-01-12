@@ -25,22 +25,31 @@ static inline void SNESReportStatus(BYTE byte1, BYTE byte2) {
 
 void SNESConfig(int data_pin, int clock_pin, int latch_pin) {
 
-    // clock and latch as output (open drain)
-    // clock is normally high
-    SetPinDigitalOut(clock_pin, 1, 1);
+    if (data_pin == 0 || clock_pin == 0 || latch_pin == 0) {
 
-    // LATCH is Active HIGH
-    SetPinDigitalOut(latch_pin, 0, 1);
+        SNESEnabled = 0;
+     
+    } else {
 
-    // data as input  pull up
-    SetPinDigitalIn(data_pin, 1);
+        SNESEnabled = 1;
+        // clock and latch as output (open drain)
+        // clock is normally high
+        SetPinDigitalOut(clock_pin, 1, 1);
+
+        // LATCH is Active HIGH
+        SetPinDigitalOut(latch_pin, 0, 1);
+
+        // data as input  pull up
+        SetPinDigitalIn(data_pin, 1);
+
+       
+    }
 
     SNESdatapin = data_pin;
     SNESlatchpin = latch_pin;
     SNESclockpin = clock_pin;
-    SNESEnabled = 1;
-    lastvalues[0]=0;
-    lastvalues[1]=0;
+    lastvalues[0] = 0;
+    lastvalues[1] = 0;
 }
 
 void SNESTasks() {

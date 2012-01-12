@@ -46,6 +46,12 @@ public class IncomingState implements IncomingHandler {
 	interface InputPinListener {
 		void setValue(int value);
 	}
+	
+	/*******************************SNES***************************/
+	interface SnesListener {
+		void setStatus(byte[] status);
+	}
+	/***************************************************************/
 
 	interface DisconnectListener {
 		void disconnected();
@@ -117,6 +123,37 @@ public class IncomingState implements IncomingHandler {
 			listeners_.peek().reportAdditionalBuffer(bytesRemaining);
 		}
 	}
+	
+	/*******************************SNES ***************************/
+	class SnesState {
+		private Queue<SnesListener> listeners_ = new ConcurrentLinkedQueue<SnesListener>();
+		private boolean currentOpen_ = false;
+
+		void pushListener(SnesListener listener) {
+			listeners_.add(listener);
+		}
+
+		void closeCurrentListener() {
+			if (currentOpen_) {
+				currentOpen_ = false;
+				listeners_.remove();
+			}
+		}
+
+		void openNextListener() {
+			assert (!listeners_.isEmpty());
+			if (!currentOpen_) {
+				currentOpen_ = true;
+			}
+		}
+
+		void setStatus(byte[] status){
+			assert (currentOpen_);
+			listeners_.peek().setStatus(status);
+		}
+	}
+	/*******************************************************************/
+	
 
 	private final InputPinState[] intputPinStates_ = new InputPinState[Constants.NUM_PINS];
 	private final DataModuleState[] uartStates_ = new DataModuleState[Constants.NUM_UART_MODULES];
@@ -126,6 +163,9 @@ public class IncomingState implements IncomingHandler {
 			* Constants.INCAP_MODULES_DOUBLE.length
 			+ Constants.INCAP_MODULES_SINGLE.length];
 	private final DataModuleState icspState_ = new DataModuleState();
+	/*******************************SNES ***************************/
+	private final SnesState snesState = new SnesState(); 
+	/****************************************************************/
 	private final Set<DisconnectListener> disconnectListeners_ = new HashSet<IncomingState.DisconnectListener>();
 	private ConnectionState connection_ = ConnectionState.INIT;
 	public String hardwareId_;
@@ -133,6 +173,7 @@ public class IncomingState implements IncomingHandler {
 	public String firmwareId_;
 
 	public IncomingState() {
+	
 		for (int i = 0; i < intputPinStates_.length; ++i) {
 			intputPinStates_[i] = new InputPinState();
 		}
@@ -148,6 +189,7 @@ public class IncomingState implements IncomingHandler {
 		for (int i = 0; i < incapStates_.length; ++i) {
 			incapStates_[i] = new DataModuleState();
 		}
+		
 	}
 
 	synchronized public void waitConnectionEstablished()
@@ -204,6 +246,12 @@ public class IncomingState implements IncomingHandler {
 	public void addSpiListener(int spiNum, DataModuleListener listener) {
 		spiStates_[spiNum].pushListener(listener);
 	}
+	
+	/*******************************SNES ***************************/
+	public void addSnesListener(SnesListener listener) {
+		snesState.pushListener(listener);
+	}
+	/****************************************************************/
 
 	synchronized public void addDisconnectListener(DisconnectListener listener)
 			throws ConnectionLostException {
@@ -252,6 +300,10 @@ public class IncomingState implements IncomingHandler {
 			incapState.closeCurrentListener();
 		}
 		icspState_.closeCurrentListener();
+		/*******************************SNES ***************************/
+		snesState.closeCurrentListener();
+		/***************************************************************/
+		
 	}
 
 	@Override
@@ -443,6 +495,28 @@ public class IncomingState implements IncomingHandler {
 			throw new ConnectionLostException();
 		}
 	}
+	
+	/*******************************SNES ***************************/
+	@Override
+	public void handleSnesReport(int size, byte[] status) {
+		// logMethod("handleReportDigitalInStatus", pin, level);
+		byte [] status_ = new byte[size];
+		for (int i=0; i<size ; i++)
+			status_[i]=status[i];
+		snesState.setStatus(status_);
+	}
+	
+	@Override
+	public void handleSnesClose() {
+		snesState.closeCurrentListener();
+	}
+
+	@Override
+	public void handleSnesOpen() {
+		snesState.openNextListener();
+	}
+	
+	/****************************************************************/
 
 //	private void logMethod(String name, Object... args) {
 //		StringBuffer msg = new StringBuffer(name);

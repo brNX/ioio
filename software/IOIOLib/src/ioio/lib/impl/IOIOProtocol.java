@@ -90,6 +90,13 @@ public class IOIOProtocol {
 	static final int INCAP_STATUS                        = 0x1B;
 	static final int SET_PIN_INCAP                       = 0x1C;
 	static final int INCAP_REPORT                        = 0x1C;
+	/*******************************SNES***************************/
+	static final int SNES_CONFIG                         = 0x1D;
+    static final int SNES_STATUS                         = 0x1E;
+	/***************************************************************/
+
+	
+	
 
 	static final int[] SCALE_DIV = new int[] {
 		0x1F,  // 31.25
@@ -438,6 +445,17 @@ public class IOIOProtocol {
 		writeByte(ICSP_REGOUT);
 		flush();
 	}
+	
+	/*******************************SNES ***************************/
+	synchronized  public void setSnesPins(int latch,int clock , int data) throws IOException{
+		writeByte(SNES_CONFIG);
+		writeByte(latch);
+		writeByte(clock);
+		writeByte(data);
+		flush();
+	}
+	/***************************************************************/
+	
 
 	public interface IncomingHandler {
 		public void handleEstablishConnection(byte[] hardwareId,
@@ -500,6 +518,16 @@ public class IOIOProtocol {
 		public void handleIncapClose(int incapNum);
 
 		public void handleIncapOpen(int incapNum);
+		
+		
+		/*******************************SNES ***************************/
+		public void handleSnesReport(int size,byte[] status);
+		
+		public void handleSnesClose();
+
+		public void handleSnesOpen();
+		/***************************************************************/
+
 	}
 
 	class IncomingThread extends Thread {
@@ -767,7 +795,23 @@ public class IOIOProtocol {
 						readBytes(size, data);
 						handler_.handleIncapReport(arg1 & 0x0F, size, data);
 						break;
-
+						
+					/*******************************SNES***************************/
+					case SNES_CONFIG:
+						arg1 = readByte();
+						if (arg1 == 0) {
+							handler_.handleSnesClose();
+						} else {
+							handler_.handleSnesOpen();
+						}
+						break;
+					case SNES_STATUS:
+						data[0] = (byte) readByte();
+						data[1] = (byte) readByte();
+						handler_.handleSnesReport(2,data);
+						break;
+					/***************************************************************/
+						
 					default:
 						in_.close();
 						IOException e = new IOException(
