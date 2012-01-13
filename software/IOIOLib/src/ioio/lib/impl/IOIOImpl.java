@@ -633,12 +633,21 @@ public class IOIOImpl implements IOIO, DisconnectListener {
 		checkPinFree(latchPin);
 		checkPinFree(clkPin);
 		checkPinFree(dataPin);
-		
+			
+			
 		SnesImpl result = new SnesImpl(this, latchPin, clkPin, dataPin);
 		addDisconnectListener(result);
+		incomingState_.addSnesListener(result);
 		openPins_[latchPin] = true;
 		openPins_[clkPin] = true;
 		openPins_[dataPin] = true;
+		
+		try {
+			protocol_.setSnesPins(latchPin, clkPin, dataPin);
+		} catch (IOException e) {
+			e.printStackTrace();
+			result.close();
+		}
 		
 		return result;
 		

@@ -805,6 +805,7 @@ public class IOIOProtocol {
 							handler_.handleSnesOpen();
 						}
 						break;
+						
 					case SNES_STATUS:
 						data[0] = (byte) readByte();
 						data[1] = (byte) readByte();

@@ -2,6 +2,8 @@ package ioio.lib.impl;
 
 import java.io.IOException;
 
+import android.util.Log;
+
 import ioio.lib.api.Snes;
 import ioio.lib.api.exception.ConnectionLostException;
 import ioio.lib.impl.IncomingState.SnesListener;
@@ -23,6 +25,8 @@ public class SnesImpl extends AbstractResource implements Snes ,SnesListener{
 		clkPinNum_=clkPinNum;
 		dataPinNum_=dataPinNum;
 		
+		Log.i("SnesImp","new Snes  latch="+latchPinNum+" clock="+clkPinNum+" data="+dataPinNum);
+		
 	}
 	
 
@@ -35,6 +39,7 @@ public class SnesImpl extends AbstractResource implements Snes ,SnesListener{
 		try {
 			ioio_.protocol_.setSnesPins(0,0,0);
 		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
