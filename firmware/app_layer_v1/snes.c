@@ -90,9 +90,9 @@ void SNESTasks() {
             //SNES_CLOCK_LOW();
             PinSetLat(SNESclockpin, 0);
 
-            byte1 <<= 1;
+            byte2 <<= 1;
             if (!PinGetPort(SNESdatapin)) {
-                byte1 |= 1;
+                byte2 |= 1;
             }
 
             __delay_us(6);
