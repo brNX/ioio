@@ -86,8 +86,8 @@ public class IncomingState implements IncomingHandler {
 		}
 
 		void setValue(int v) {
-			//assert (currentOpen_);
-			//listeners_.peek().setValue(v);
+			assert (currentOpen_);
+			listeners_.peek().setValue(v);
 		}
 	}
 
@@ -316,7 +316,7 @@ public class IncomingState implements IncomingHandler {
 
 	@Override
 	public void handleSetChangeNotify(int pin, boolean changeNotify) {
-		logMethod("handleSetChangeNotify", pin, changeNotify);
+		//logMethod("handleSetChangeNotify", pin, changeNotify);
 		if (changeNotify) {
 			intputPinStates_[pin].openNextListener();
 		} else {
@@ -332,7 +332,7 @@ public class IncomingState implements IncomingHandler {
 
 	@Override
 	public void handleAnalogPinStatus(int pin, boolean open) {
-		// logMethod("handleAnalogPinStatus", pin, open);
+		//logMethod("handleAnalogPinStatus", pin, open);
 		if (open) {
 			intputPinStates_[pin].openNextListener();
 		} else {
@@ -436,7 +436,7 @@ public class IncomingState implements IncomingHandler {
 
 	@Override
 	public void handleReportDigitalInStatus(int pin, boolean level) {
-		// logMethod("handleReportDigitalInStatus", pin, level);
+		//logMethod("handleReportDigitalInStatus", pin, level);
 		intputPinStates_[pin].setValue(level ? 1 : 0);
 	}
 
@@ -448,7 +448,7 @@ public class IncomingState implements IncomingHandler {
 
 	@Override
 	public void handleReportAnalogInStatus(int pins[], int values[]) {
-		// logMethod("handleReportAnalogInStatus", pins, values);
+		//logMethod("handleReportAnalogInStatus", pins, values);
 		for (int i = 0; i < pins.length; ++i) {
 			intputPinStates_[pins[i]].setValue(values[i]);
 		}
@@ -499,9 +499,8 @@ public class IncomingState implements IncomingHandler {
 	/*******************************SNES ***************************/
 	@Override
 	public void handleSnesReport(int size, byte[] status) {
-		// logMethod("handleReportDigitalInStat// l
 		
-		Log.i("incomingstate", "handleSnesOpenReport "+status[0] + " "+status[1]);
+		//Log.i("incomingstate", "handleSnesReport "+status[0] + " "+status[1]);
 		
 		byte [] status_ = new byte[size];
 		for (int i=0; i<size ; i++)
@@ -511,29 +510,29 @@ public class IncomingState implements IncomingHandler {
 	
 	@Override
 	public void handleSnesClose() {
-		Log.i("incomingstate", "handleSnesClose");
+		//Log.i("incomingstate", "handleSnesClose");
 		snesState.closeCurrentListener();
 	}
 
 	@Override
 	public void handleSnesOpen() {
-		Log.i("incomingstate", "handleSnesOpen");
+		//Log.i("incomingstate", "handleSnesOpen");
 		snesState.openNextListener();
 	}
 	
 	/****************************************************************/
 
-	private void logMethod(String name, Object... args) {
-		StringBuffer msg = new StringBuffer(name);
-		msg.append('(');
-		for (int i = 0; i < args.length; ++i) {
-			if (i != 0) {
-				msg.append(", ");
-			}
-			msg.append(args[i]);
-		}
-		msg.append(')');
-
-		Log.v("IncomingState", msg.toString());
-	}
+//	private void logMethod(String name, Object... args) {
+//		StringBuffer msg = new StringBuffer(name);
+//		msg.append('(');
+//		for (int i = 0; i < args.length; ++i) {
+//			if (i != 0) {
+//				msg.append(", ");
+//			}
+//			msg.append(args[i]);
+//		}
+//		msg.append(')');
+//
+//		Log.v("IncomingState", msg.toString());
+//	}
 }

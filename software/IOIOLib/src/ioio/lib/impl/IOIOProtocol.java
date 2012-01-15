@@ -799,6 +799,8 @@ public class IOIOProtocol {
 					/*******************************SNES***************************/
 					case SNES_CONFIG:
 						arg1 = readByte();
+						readByte();
+						readByte();
 						if (arg1 == 0) {
 							handler_.handleSnesClose();
 						} else {
